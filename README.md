@@ -4,7 +4,7 @@
 
 ### Business Performnace 
 
-Process: 
+Process:<br/>
 Define the Problem and Objectives - Planned the desired outcome by asking sufficient questions and narrowed the description to specific objectives to work on.<br/>
 Data Collection - Reviewed the database and, based on the objectives, confirmed whether the data collected was sufficient for the desired outcome.<br/>
 Data Cleaning and Processing - After reviewing, I used DBeaver to run queries in SQL to clean and extract the critical information needed.<br/>
@@ -12,27 +12,27 @@ Exploratory Analysis - Created initial visualizations to identify overall patter
 Statistical Analysis - I reviewed the current patterns to confirm data integrity and to interpret the existing data.<br/>
 Visualization and Communication - Once I had all the desired information and confirmed its integrity, I created the appropriate visualizations to share the results and insights with stakeholders
 
-Tools and resources: 
+Tools and resources:<br/>
   Database - PostgreSQL database.<br/>
   DBeaver - SQL coding to clean the database and extract critical information.<br/>
   Looker Studio - For data visualization.<br/>
 
-Data: 
+Data:<br/>
   Postgres Database - Internal data collection and management system within the company.<br/>
     - To ensure data integrity, I ran 3 different querys for different dashboards within one report
 
-Business Problem: 
+Business Problem:<br/>
   Optimize resources, gain clarity about their own transactions, gain efficiency in their operations and resources
 
-Objectives: 
+Objectives:<br/>
   Identify which revenue sources are most profitable and consistent to optimize business development and resource allocation.<br/>
   Categorize, track, and optimize business expenses to improve operational efficiency and reduce unnecessary costs.<br/>
   Understand personnel costs and allocation efficiency to optimize team productivity and project profitability.<br/>
 
-Purpose: 
+Purpose:<br/>
   Provide actionable insights on financial performance, risk exposure, and resource optimization to support strategic decision-making.
 
-Key Questions Answered 
+Key Questions Answered<br/>
   Where is the revenue concentrated, and what are the associated risks?.<br/>
   Which expense categories offer the greatest optimization opportunities?.<br/>
   How efficiently are we allocating team resources to maximize profitability?.<br/>
