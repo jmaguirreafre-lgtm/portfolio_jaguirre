@@ -190,8 +190,8 @@ GROUP BY<br/>
 ORDER BY total_outcome DESC;<br/>
 
 
-**Insights** 
-Exectuvie Summary: 
+**Insights** <br/>
+Exectuvie Summary: <br/>
 Provide actionable insights on financial performance, risk exposure, and resource optimization to support strategic decision-making.<br/>
   Revenue concentration risk.<br/>
   Profit margin by stream.<br/>
@@ -201,7 +201,7 @@ Provide actionable insights on financial performance, risk exposure, and resourc
   Risk mitigation recommendations for revenue concentration.<br/>
   Resource reallocation strategy to improve project profitability.<br/>
 
-Core Analysis:
+Core Analysis:<br/>
 Identify which revenue sources are most profitable and consistent to optimize business development and resource allocation.<br/>
   Detailed variance report by project.<br/>
   Variance trends over time.<br/>
@@ -219,7 +219,7 @@ Identify which revenue sources are most profitable and consistent to optimize bu
   Regression analysis: team size vs project profitability.<br/>
   Historical utilization trends.<br/>
 
-**Recommendations** 
+**Recommendations**<br/>
 Based on the analysis conducted on the business, it is critical to either increase revenue per project or expand the number of projects to reduce direct dependency on the top two clients. It is recommended to plan on a quarterly basis instead of annually, as this will provide greater stability to the business and create improved revenue margins in later quarters.<br/>
 Given the company's profitability profile, it is recommended to track expenses directly related to projects, as this will create better visibility into expenditures and provide superior control over the income versus outcome balance within the company and its resources.<br/>
 In the following pages, it is recommended to focus on the most profitable stream and establish a centralized operational stream, as this provides better control over project operations. Additionally, it is recommended to standardize categories across merchants and transaction types, as this provides clear visibility into the nature of transactions being made and their destinations.<br/>
