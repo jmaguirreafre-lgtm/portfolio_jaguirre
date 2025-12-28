@@ -31,7 +31,7 @@ Objectives:
 Purpose: 
   Provide actionable insights on financial performance, risk exposure, and resource optimization to support strategic decision-making.
 
-Key Quetions Answered 
+Key Questions Answered 
   Where is the revenue concentrated, and what are the associated risks?
   Which expense categories offer the greatest optimization opportunities?
   How efficiently are we allocating team resources to maximize profitability?
