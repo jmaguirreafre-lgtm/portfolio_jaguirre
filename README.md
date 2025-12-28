@@ -1,5 +1,6 @@
 # Porfolio 
-##Project 1
+
+## Project 1
 
 ### Business Performnace 
 
@@ -76,5 +77,155 @@ Visuzalization:
 
 <img width="1085" height="814" alt="image" src="https://github.com/user-attachments/assets/7d177d17-fe34-4fc0-824e-dc2b608ef2f6" />
 
+SQL Code: 
+  (For ethical and security purposes, table's name has been changed to generic names) 
+
+SELECT
+    a.id,
+    a.title as item_name,
+    b.category as category_name,
+    d.company_name as client,
+    MIN(e.source_name) as vendors,
+    SUM(a.allocated_amount / 100) as budget,
+    e.currency_code as currency,
+    SUM(a.invoiced_amount / 100) as total_billed,
+    SUM(CASE
+        WHEN e.flow_type = 1 AND e.record_type = 'main_item'
+        THEN e.converted_amount
+        ELSE 0
+    END) / 100 AS income,
+    SUM(CASE
+        WHEN e.flow_type = 2
+        THEN e.converted_amount
+        ELSE 0
+    END) / 100 AS outcome,
+    MIN(e.created_at) as first_record_date,
+    MAX(e.created_at) as last_record_date
+FROM
+    main_items a
+LEFT JOIN
+    financial_records e ON a.id = e.item_id
+LEFT JOIN
+    categories b ON a.category_id = b.id
+LEFT JOIN
+    clients d ON a.client_id = d.id
+GROUP BY
+    a.id,
+    a.title,
+    b.category,
+    d.company_name,
+    e.currency_code
+ORDER BY
+    income DESC;
+
+------------------ Correct filters
+
+SELECT
+    a.id,
+    a.title as item_name,
+    b.category as category_name,
+    d.company_name as client,
+    fin.vendors,
+    a.allocated_amount / 100 as budget,
+    fin.currency,
+    a.invoiced_amount / 100 as total_billed,
+    fin.income,
+    fin.outcome,
+    fin.first_record_date,
+    fin.last_record_date
+FROM
+    main_items a
+LEFT JOIN (
+    SELECT
+        e.item_id,
+        e.currency_code as currency,
+        MIN(e.source_name) as vendors,
+        SUM(CASE
+            WHEN e.flow_type = 1 AND e.record_type = 'main_item'
+            THEN e.converted_amount
+            ELSE 0
+        END) / 100 AS income,
+        SUM(CASE
+            WHEN e.flow_type = 2
+            THEN e.converted_amount
+            ELSE 0
+        END) / 100 AS outcome,
+        MIN(e.created_at) as first_record_date,
+        MAX(e.created_at) as last_record_date
+    FROM
+        financial_records e
+    GROUP BY
+        e.item_id,
+        e.currency_code
+) fin ON a.id = fin.item_id
+LEFT JOIN
+    categories b ON a.category_id = b.id
+LEFT JOIN
+    clients d ON a.client_id = d.id
+ORDER BY
+    fin.income DESC;
 
 
+-------- 6th page
+
+SELECT
+    e.id,
+    MIN(e.source_name) as vendor,
+    MIN(f.description) as account_names,
+    e.currency_code,
+    e.converted_amount / 100 as total_outcome,
+    e.created_at,
+    e.classification
+FROM financial_records e
+LEFT JOIN ledger_entries g ON e.id = g.record_id
+INNER JOIN account_master f ON g.account_id = f.id
+WHERE e.flow_type = 2
+GROUP BY
+    e.id,
+    e.source_name,
+    e.currency_code,
+    e.converted_amount,
+    e.created_at,
+    e.classification
+ORDER BY total_outcome DESC;
+
+
+**Insights** 
+Exectuvie Summary: 
+Provide actionable insights on financial performance, risk exposure, and resource optimization to support strategic decision-making.<br/>
+  Revenue concentration risk.<br/>
+  Profit margin by stream.<br/>
+  Expense reduction opportunity.<br/>
+  Resource utilization efficiency.<br/>
+  Identification of the top priorities for financial optimization.<br/>
+  Risk mitigation recommendations for revenue concentration.<br/>
+  Resource reallocation strategy to improve project profitability.<br/>
+
+Core Analysis:
+Identify which revenue sources are most profitable and consistent to optimize business development and resource allocation.<br/>
+  Detailed variance report by project.<br/>
+  Variance trends over time.<br/>
+  Complete customer revenue ranking with contribution percentages.<br/>
+  Historical trend analysis of customer concentration.<br/>
+  Detailed P&L by stream.<br/>
+  Expense breakdown by stream category.<br/>
+  Detailed expense ledger by category with transaction-level detail.<br/>
+  Statistical analysis of expense patterns.<br/>
+  Complete vendor transaction history.<br/>
+  Price variance analysis by vendor over time.<br/>
+  Pattern recognition results.<br/>
+  Historical spending trends by recurring service.<br/>
+  Resource allocation.<br/>
+  Regression analysis: team size vs project profitability.<br/>
+  Historical utilization trends.<br/>
+
+**Recommendations** 
+Based on the analysis conducted on the business, it is critical to either increase revenue per project or expand the number of projects to reduce direct dependency on the top two clients. It is recommended to plan on a quarterly basis instead of annually, as this will provide greater stability to the business and create improved revenue margins in later quarters.<br/>
+Given the company's profitability profile, it is recommended to track expenses directly related to projects, as this will create better visibility into expenditures and provide superior control over the income versus outcome balance within the company and its resources.<br/>
+In the following pages, it is recommended to focus on the most profitable stream and establish a centralized operational stream, as this provides better control over project operations. Additionally, it is recommended to standardize categories across merchants and transaction types, as this provides clear visibility into the nature of transactions being made and their destinations.<br/>
+As a final recommendation, it is critical to separate operational expenses from workforce-related expenses, as this distinction creates better information for budgeting purposes, enables accurate calculation of annual operating costs, and facilitates more precise project budgeting and man-hour allocation.
+
+
+
+
+  
