@@ -82,112 +82,112 @@ SQL Code:
 
 SELECT
     a.id,
-    a.title as item_name,
-    b.category as category_name,
-    d.company_name as client,
-    MIN(e.source_name) as vendors,
-    SUM(a.allocated_amount / 100) as budget,
-    e.currency_code as currency,
-    SUM(a.invoiced_amount / 100) as total_billed,
-    SUM(CASE
-        WHEN e.flow_type = 1 AND e.record_type = 'main_item'
-        THEN e.converted_amount
-        ELSE 0
-    END) / 100 AS income,
-    SUM(CASE
-        WHEN e.flow_type = 2
-        THEN e.converted_amount
-        ELSE 0
-    END) / 100 AS outcome,
-    MIN(e.created_at) as first_record_date,
-    MAX(e.created_at) as last_record_date
-FROM
-    main_items a
+    a.title as item_name,<br/>
+    b.category as category_name,<br/>
+    d.company_name as client,<br/>
+    MIN(e.source_name) as vendors,<br/>
+    SUM(a.allocated_amount / 100) as budget,<br/>
+    e.currency_code as currency,<br/>
+    SUM(a.invoiced_amount / 100) as total_billed,<br/>
+    SUM(CASE<br/>
+        WHEN e.flow_type = 1 AND e.record_type = 'main_item'<br/>
+        THEN e.converted_amount<br/>
+        ELSE 0<br/>
+    END) / 100 AS income,<br/>
+    SUM(CASE<br/>
+        WHEN e.flow_type = 2<br/>
+        THEN e.converted_amount<br/>
+        ELSE 0<br/>
+    END) / 100 AS outcome,<br/>
+    MIN(e.created_at) as first_record_date,<br/>
+    MAX(e.created_at) as last_record_date<br/>
+FROM<br/>
+    main_items a<br/>
 LEFT JOIN
-    financial_records e ON a.id = e.item_id
-LEFT JOIN
-    categories b ON a.category_id = b.id
-LEFT JOIN
-    clients d ON a.client_id = d.id
-GROUP BY
-    a.id,
-    a.title,
-    b.category,
-    d.company_name,
-    e.currency_code
-ORDER BY
-    income DESC;
+    financial_records e ON a.id = e.item_id<br/>
+LEFT JOIN<br/>
+    categories b ON a.category_id = b.id<br/>
+LEFT JOIN<br/>
+    clients d ON a.client_id = d.id<br/>
+GROUP BY<br/>
+    a.id,<br/>
+    a.title,<br/>
+    b.category,<br/>
+    d.company_name,<br/>
+    e.currency_code<br/>
+ORDER BY<br/>
+    income DESC;<br/>
 
------------------- Correct filters
+------------------ Correct filters<br/>
 
-SELECT
-    a.id,
-    a.title as item_name,
-    b.category as category_name,
-    d.company_name as client,
-    fin.vendors,
-    a.allocated_amount / 100 as budget,
-    fin.currency,
-    a.invoiced_amount / 100 as total_billed,
-    fin.income,
-    fin.outcome,
-    fin.first_record_date,
-    fin.last_record_date
-FROM
-    main_items a
-LEFT JOIN (
-    SELECT
-        e.item_id,
-        e.currency_code as currency,
-        MIN(e.source_name) as vendors,
-        SUM(CASE
-            WHEN e.flow_type = 1 AND e.record_type = 'main_item'
-            THEN e.converted_amount
-            ELSE 0
-        END) / 100 AS income,
-        SUM(CASE
-            WHEN e.flow_type = 2
-            THEN e.converted_amount
-            ELSE 0
-        END) / 100 AS outcome,
-        MIN(e.created_at) as first_record_date,
-        MAX(e.created_at) as last_record_date
-    FROM
-        financial_records e
-    GROUP BY
-        e.item_id,
-        e.currency_code
-) fin ON a.id = fin.item_id
-LEFT JOIN
-    categories b ON a.category_id = b.id
-LEFT JOIN
-    clients d ON a.client_id = d.id
-ORDER BY
-    fin.income DESC;
+SELECT<br/>
+    a.id,<br/>
+    a.title as item_name,<br/>
+    b.category as category_name,<br/>
+    d.company_name as client,<br/>
+    fin.vendors,<br/>
+    a.allocated_amount / 100 as budget,<br/>
+    fin.currency,<br/>
+    a.invoiced_amount / 100 as total_billed,<br/>
+    fin.income,<br/>
+    fin.outcome,<br/>
+    fin.first_record_date,<br/>
+    fin.last_record_date<br/>
+FROM<br/>
+    main_items a<br/>
+LEFT JOIN (<br/>
+    SELECT<br/>
+        e.item_id,<br/>
+        e.currency_code as currency,<br/>
+        MIN(e.source_name) as vendors,<br/>
+        SUM(CASE<br/>
+            WHEN e.flow_type = 1 AND e.record_type = 'main_item'<br/>
+            THEN e.converted_amount<br/>
+            ELSE 0<br/>
+        END) / 100 AS income,<br/>
+        SUM(CASE<br/>
+            WHEN e.flow_type = 2<br/>
+            THEN e.converted_amount<br/>
+            ELSE 0<br/>
+        END) / 100 AS outcome,<br/>
+        MIN(e.created_at) as first_record_date,<br/>
+        MAX(e.created_at) as last_record_date<br/>
+    FROM<br/>
+        financial_records e<br/>
+    GROUP BY<br/>
+        e.item_id,<br/>
+        e.currency_code<br/>
+) fin ON a.id = fin.item_id<br/>
+LEFT JOIN<br/>
+    categories b ON a.category_id = b.id<br/>
+LEFT JOIN<br/>
+    clients d ON a.client_id = d.id<br/>
+ORDER BY<br/>
+    fin.income DESC;<br/>
 
 
 -------- 6th page
 
-SELECT
-    e.id,
-    MIN(e.source_name) as vendor,
-    MIN(f.description) as account_names,
-    e.currency_code,
-    e.converted_amount / 100 as total_outcome,
-    e.created_at,
-    e.classification
-FROM financial_records e
-LEFT JOIN ledger_entries g ON e.id = g.record_id
-INNER JOIN account_master f ON g.account_id = f.id
-WHERE e.flow_type = 2
-GROUP BY
-    e.id,
-    e.source_name,
-    e.currency_code,
-    e.converted_amount,
-    e.created_at,
-    e.classification
-ORDER BY total_outcome DESC;
+SELECT<br/>
+    e.id,<br/>
+    MIN(e.source_name) as vendor,<br/>
+    MIN(f.description) as account_names,<br/>
+    e.currency_code,<br/>
+    e.converted_amount / 100 as total_outcome,<br/>
+    e.created_at,<br/>
+    e.classification<br/>
+FROM financial_records e<br/>
+LEFT JOIN ledger_entries g ON e.id = g.record_id<br/>
+INNER JOIN account_master f ON g.account_id = f.id<br/>
+WHERE e.flow_type = 2<br/>
+GROUP BY<br/>
+    e.id,<br/>
+    e.source_name,<br/>
+    e.currency_code,<br/>
+    e.converted_amount,<br/>
+    e.created_at,<br/>
+    e.classification<br/>
+ORDER BY total_outcome DESC;<br/>
 
 
 **Insights** 
