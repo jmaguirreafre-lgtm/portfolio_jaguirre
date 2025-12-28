@@ -228,4 +228,238 @@ As a final recommendation, it is critical to separate operational expenses from 
 
 
 
+## Project 2 
+
+### WFM-Efficiency
+
+Process:<br/>
+Define the Problem and Objectives - Planned the desired outcome by asking sufficient questions, creating a user persona and stakeholder's profile and narrowed the specific information they want to see.<br/>
+Data Collection - Reviewed the database it's relation within the tables, as the didn't have an specific relation and based on the objectives I validated the available data.<br/>
+Data Cleaning and Processing - After reviewing, I used DBeaver to run queries in SQL to clean and extract the critical information needed, for this specific dashboard this was for each specific table and dashboard, as the relation in the tables, affected the data integrity.<br/>
+Exploratory Analysis - Created initial visualizations to detect anomalies in the data and to confirm which data could be used.<br/>
+Statistical Analysis - I reviewed the current patterns to confirm data integrity and to interpret the existing data.<br/>
+Visualization and Communication - Once I had all the desired information and confirmed its integrity, I created the appropriate visualizations to share the results and insights with stakeholders
+
+Tools and resources:<br/>
+  Database - PostgreSQL database.<br/>
+  DBeaver - SQL coding to clean the database and extract critical information.<br/>
+  Looker Studio - For data visualization.<br/>
   
+Data:<br/>
+  Postgres Database - Internal data collection and management system within the company.<br/>
+    - To ensure data integrity, querys were directly per table 
+
+Business problem:<br/>
+  Optimize their HR processes, improve the work force requests and get a better visibility on their own processes to ensure all requests and processes are completed in time.
+
+Objectives:<br/>
+  Establish a centralized, data-driven HR analytics platform<br/>
+  Automate manual reporting processes and reduce administrative overhead<br/>
+  Provide real-time visibility into workforce metrics for informed decision-making<br/>
+  Enable proactive management of attendance, leave, and recruitment activities<br/>
+  Identify trends and patterns to optimize workforce planning<br/>
+
+
+Key Questions Answered:<br/>
+  How is leave utilization trending across the organization?
+  Which employees are at risk of losing leave balances?
+  Are we processing leave requests efficiently?
+  How is our headcount growing or declining over time?
+  What is our employee turnover rate and where is it happening?
+  Are we retaining employees long enough to get ROI on hiring?
+  What are the retention risk factors in our organization?
+  What are our hiring needs based on turnover and growth?
+  How many open positions do we have and how long have they been open?
+  What is our recruitment funnel looking like?
+  Where are candidates getting stuck in our hiring process?
+  How effective are our different recruitment sources?
+  How long does it take us to hire someone?
+  What is our offer acceptance rate?
+
+Key Results and indicators:<br/>
+
+  1.1 Leave Utilization Rate<br/>
+
+  1.2 Pending Leave Requests<br/>
+
+  1.3 Leave Approval Confirmation Time<br/>
+
+  1.4 Leave Balance Expiring Soon<br/>
+
+  1.5 Sick Leave vs Planned Leave Ratio<br/>
+
+  1.6 Employees Currently on Leave<br/>
+
+  2.1 Total Headcount<br/>
+
+  2.2 Headcount by Department<br/>
+
+  2.3 New Hires (Month/Quarter)<br/>
+
+  2.4 Employee Turnover Rate<br/>
+
+  2.5 Average Employee Tenure<br/>
+
+  2.6 Probation Ending Soon<br/>
+
+  3.1 Pending Validation Requests<br/>
+
+  3.2 Holiday Impact on Attendance<br/>
+
+  Visuzalization: 
+  <img width="1088" height="803" alt="image" src="https://github.com/user-attachments/assets/a758ce9d-144f-466d-90c3-60eeb659fdb6" />
+
+  <img width="1086" height="797" alt="image" src="https://github.com/user-attachments/assets/7e9b4294-dd0f-4117-a907-13c5cf8d5d68" />
+
+  <img width="1083" height="808" alt="image" src="https://github.com/user-attachments/assets/5331b700-165c-43e8-8e40-6715a73eaeed" />
+
+
+SQL Code:
+  (For ethical and security purposes, table's name has been changed to generic names) 
+
+  
+SELECT<br/>
+    schemaname,<br/>
+    relname AS table_name,<br/>
+    n_live_tup AS row_count<br/>
+FROM pg_stat_user_tables<br/>
+WHERE n_live_tup > 0<br/>
+ORDER BY schemaname, relname;<br/>
+
+-----------<br/>
+
+SELECT<br/>
+    a.status,<br/>
+    b.category AS request_type,<br/>
+    a.description,<br/>
+    a.person_id,<br/>
+    CONCAT(c.first_name,' ', c.last_name) AS full_name,<br/>
+    a.date_breakdown,<br/>
+    a.rejection_reason,<br/>
+    a.days_requested,<br/>
+    a.start_date,<br/>
+    a.end_date<br/>
+FROM<br/>
+    time_off_requests a<br/>
+LEFT JOIN<br/>
+    staff_records c ON a.person_id = c.id<br/>
+LEFT JOIN<br/>
+    time_off_types b ON a.type_id = b.id;<br/>
+
+-------------<br/>
+
+SELECT<br/>
+    c.id,<br/>
+    CONCAT(c.first_name , ' ', c.last_name) AS full_name,<br/>
+    d.department,<br/>
+    e.employment_status,<br/>
+    f.position_title,<br/>
+    g.office_location,<br/>
+    g.hire_date<br/>
+FROM<br/>
+    staff_records c<br/>
+LEFT JOIN<br/>
+    work_details g ON c.id = g.person_id<br/>
+LEFT JOIN<br/>
+    departments d ON g.department_id = d.id<br/>
+LEFT JOIN<br/>
+    employment_types e ON g.employment_type_id = e.id<br/>
+LEFT JOIN<br/>
+    job_positions f ON g.position_id = f.id<br/>
+WHERE<br/>
+    g.hire_date IS NOT NULL;<br/>
+
+--------------------------<br/>
+
+SELECT<br/>
+    h.agreement_name,<br/>
+    c.badge_number,<br/>
+    g.base_compensation,<br/>
+    h.hourly_rate,<br/>
+    d.department,<br/>
+    e.employment_status,<br/>
+    DATE_TRUNC('month', h.created_at)<br/>
+FROM<br/>
+    compensation_history h<br/>
+LEFT JOIN<br/>
+    staff_records c ON h.person_id = c.id<br/>
+LEFT JOIN<br/>
+    work_details g ON h.person_id = g.person_id<br/>
+LEFT JOIN<br/>
+    departments d ON g.department_id = d.id<br/>
+LEFT JOIN<br/>
+    employment_types e ON g.employment_type_id = e.id;<br/>
+
+----------------<br/>
+
+SELECT<br/>
+    i.full_name,<br/>
+    f.position_title,<br/>
+    j.phase,<br/>
+    i.converted_staff_id,<br/>
+    i.origin_source,<br/>
+    i.created_at,<br/>
+    i.last_updated<br/>
+FROM<br/>
+    applicant_history i<br/>
+LEFT JOIN<br/>
+    job_positions f ON i.position_id = f.id<br/>
+LEFT JOIN<br/>
+    hiring_stages j ON i.stage_id = j.id;<br/>
+
+--------------------<br/>
+
+SELECT<br/>
+    DISTINCT(a.id),<br/>
+    a.status,<br/>
+    b.category AS request_type,<br/>
+    a.description,<br/>
+    a.person_id,<br/>
+    CONCAT(c.first_name,' ', c.last_name) AS full_name,<br/>
+    a.date_breakdown AS specific_dates,<br/>
+    a.rejection_reason,<br/>
+    a.days_requested,<br/>
+    g.base_compensation,<br/>
+    h.agreement_name,<br/>
+    d.department,<br/>
+    e.employment_status,<br/>
+    f.position_title,<br/>
+    g.office_location,<br/>
+    a.start_date,<br/>
+    a.end_date<br/>
+FROM<br/>
+    time_off_requests a<br/>
+LEFT JOIN<br/>
+    staff_records c ON a.person_id = c.id<br/>
+LEFT JOIN<br/>
+    time_off_types b ON a.type_id = b.id<br/>
+LEFT JOIN<br/>
+    work_details g ON a.person_id = g.person_id<br/>
+LEFT JOIN<br/>
+    compensation_history h ON a.person_id = h.person_id<br/>
+LEFT JOIN<br/>
+    departments d ON g.department_id = d.id<br/>
+LEFT JOIN<br/>
+    employment_types e ON g.employment_type_id = e.id<br/>
+LEFT JOIN<br/>
+    job_positions f ON g.position_id = f.id;<br/>
+
+**Insights** <br/>
+  Analysis on leave utilization patterns by leave type, department, tenure<br/>
+  Identify employees at risk of losing leave balances<br/>
+  Analyze approval turnaround times<br/>
+  Visibility on headcount trends and growth patterns<br/>
+  Analyze turnover by department, tenure, demographics<br/>
+  Identify retention risk factors<br/>
+  Measure recruitment funnel conversion rates by stage<br/>
+  Analyze time-to-hire by position, department<br/>
+  Evaluate source of hire effectiveness<br/>
+
+**Recommendations**<br/>
+Based on the analysis conducted on the workforce across all departments, I recommend improving work-life balance, as several employees are not taking sufficient time off throughout the year, which could create potential attrition issues. The optimal approach would be to enhance planning coordination between projects and timelines, enabling team members to take adequate time off. Additionally, encouraging employees to utilize vacation time can improve both performance and overall well-being.
+Conversely, employees who have exceeded the standard time-off threshold should be reviewed closely, as their annual leave usage was significantly high. It is recommended to examine the reasons for their leave requests and verify the validity and accuracy of these justifications.
+A positive highlight is the ratio of sick leave to regular time off, which demonstrates a healthy pattern, as most absences are planned time off. This allows for better tracking of potential leave requests and more effective planning.
+Additionally, the staffing distribution by department appears appropriate given that the company's operations are primarily development-focused, indicating an optimal balance across departments. Nevertheless, it is recommended to standardize employee classifications into two to three types for improved staffing control and enhanced visibility in annual and project planning.
+Regarding recruitment processes, it is essential to maintain updated and timely workflows, as this will provide better information for forecasting staffing demand over time and enable more accurate insights into salary benchmarks, process timelines, and hiring conversion rates among applicants.
+
+
